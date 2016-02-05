@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">futsalnepal</string>
     <string name="title_activity_maps">Map</string>
-    <string name="google_app_id"></string>
-
+    <string name="google_app_id">AIzaSyDH95krhMDMmd-OI-627s5-ciaEbMSdHwc</string>
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="LoginGet">Login - Get</string>
+    <string name="LoginPost">Login - Post</string>
+    <string name="App">Login Application</string>
+    <string name="LoginStatus">Login Status</string>
+    <string name="LoginRole">AMOUNT</string>
+    <string name="Status"></string>
+    <string name="Role">Not assigned</string>
+    <string name="method">Login Method</string>
+    <string name="Choose">Choose Method</string>
+    <string name="previousbalance">your previous balance</string>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <string name="action_settings">Settings</string>
 </resources>

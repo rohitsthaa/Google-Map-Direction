@@ -1,7 +1,5 @@
 package api.test.com.futsalnepal;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by rohit on 2/3/16.

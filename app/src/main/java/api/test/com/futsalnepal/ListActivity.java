@@ -4,10 +4,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +20,22 @@ import java.util.List;
  * Created by rohit on 2/3/16.
  */
 public class ListActivity extends AppCompatActivity {
+    JSONArray json = new JSONArray();
+    String jsondata= "[{\"Futsal\": {\"Name\": \"Chandeswori Futsal\", \"coordinates\": [27.632121, 85.507912]}}, {\"Futsal\": {\"Name\": \"Badrakali Enterprises\", \"coordinates\": [27.674072, 85.375833]}}]";
+
     private List<ContactInfo> createList(int size) {
+        try{
+        json = new JSONArray(jsondata);}catch (JSONException e){e.printStackTrace();}
 
         List<ContactInfo> result = new ArrayList<ContactInfo>();
-        for (int i=1; i <= size; i++) {
+        for (int i=0; i <= 1; i++) {
             ContactInfo ci = new ContactInfo();
-            ci.name = ContactInfo.NAME_PREFIX + i;
-            ci.surname = ContactInfo.SURNAME_PREFIX + i;
-            ci.email = ContactInfo.EMAIL_PREFIX + i + "@test.com";
+            try {
+                ci.name = json.getJSONObject(i).getJSONObject("Futsal").getString("Name");
+                Log.w("hello",json.getJSONObject(i).getJSONObject("Futsal").getString("Name"));
+            }catch (JSONException e){e.printStackTrace();}
+            ci.surname = "";
+            ci.email = "Peacful Environment";
 
             result.add(ci);
 
@@ -42,7 +54,7 @@ public class ListActivity extends AppCompatActivity {
       recList.setLayoutManager(llm);
 
 
-        ContactAdapter ca = new ContactAdapter(createList(30));
+        ContactAdapter ca = new ContactAdapter(createList(30),getApplicationContext());
         recList.setAdapter(ca);
 
     }

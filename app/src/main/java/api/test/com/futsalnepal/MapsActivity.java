@@ -27,17 +27,29 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, RoutingListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks  {
     // Add a marker in Sydney and move the camera
-    LatLng KU = new LatLng(27.618383, 85.537435);
+    LatLng KU = new LatLng(27.618134, 85.537391);
     LatLng buspark = new LatLng(27.704181, 85.317305);
+    LatLng buspark1 = new LatLng(27.704181, 75.317305);
     private ArrayList<Polyline> polylines;
     private GoogleMap mMap;
-    private static final LatLngBounds BOUNDS_JAMAICA= new LatLngBounds(new LatLng(-57.965341647205726, 144.9987719580531),
+    JSONArray json = new JSONArray();
+    String latitude,longitude;
+    LatLng end;
+
+
+    private static final LatLngBounds BOUNDS_JAMAICA= new LatLngBounds(new LatLng(23.704181, 83.317305),
             new LatLng(72.77492067739843, -9.998857788741589));
     private int[] colors = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
+    String jsondata= "[{\"Futsal\": {\"Name\": \"Chandeswori Futsal\", \"coordinates\": [27.632121, 85.507912]}}, {\"Futsal\": {\"Name\": \"Badrakali Enterprises\", \"coordinates\": [27.674072, 85.375833]}}]";
 
 
     @Override
@@ -48,14 +60,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        polylines = new ArrayList<>();
+
+        if (getIntent().getStringExtra("EXTRA_SESSION_ID")!=null && !getIntent().getStringExtra("EXTRA_SESSION_ID").isEmpty()) {
+
+            try {
+                json = new JSONArray(jsondata);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.w("intent", getIntent().getStringExtra("EXTRA_SESSION_ID"));
+            try {
+                latitude=json.getJSONObject(0).getJSONObject("Futsal").getJSONArray("coordinates").get(0).toString();
+                longitude=json.getJSONObject(0).getJSONObject("Futsal").getJSONArray("coordinates").get(1).toString();
+                Log.w("lat",String.valueOf(Double.valueOf(latitude)));
+                Log.w("long",String.valueOf(Double.valueOf(longitude
+                )));
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+                    LatLng start = new LatLng(27.704181, 85.317305);
+             end = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
+            LatLng end1 =new LatLng(27.704181, 85.317305);
+
+
+
+
+            Routing routing = new Routing.Builder()
+                    .travelMode(AbstractRouting.TravelMode.DRIVING)
+                    .withListener(this)
+                    .alternativeRoutes(true)
+                    .waypoints(KU, end)
+                    .build();
+            routing.execute();
+
+
+
+        }
+            polylines = new ArrayList<>();
 
     }
     public void onClickBtn(View v)
     {
-        Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
+
         Intent intent = new Intent(this, ListActivity.class);
         startActivity(intent);
+
+
+
+
+
     }
 
 
@@ -71,13 +124,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (getIntent().getStringExtra("EXTRA_SESSION_ID")!=null && !getIntent().getStringExtra("EXTRA_SESSION_ID").isEmpty()) {
 
+            mMap.addMarker(new MarkerOptions().position(end).title("Marker in endpoint"));
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(KU, 20);
+            mMap.animateCamera(cameraUpdate);
+        }
 
         // Add a marker in Sydney and move the camera
-        LatLng KU = new LatLng(27.618383, 85.537435);
-        LatLng buspark = new LatLng(27.704181, 85.317305);
+
         mMap.addMarker(new MarkerOptions().position(KU).title("Marker in KU"));
-        mMap.addMarker(new MarkerOptions().position(buspark).title("Marker in buspark"));
+
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(KU, 10);
         mMap.animateCamera(cameraUpdate);
 
@@ -92,15 +149,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rectOptions.color(Color.RED);
 
 // Get back the mutable Polyline
-        Polyline polyline = mMap.addPolyline(rectOptions);
-
+        /*Polyline polyline = mMap.addPolyline(rectOptions);*/
+/*
         Routing routing = new Routing.Builder()
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)
                 .alternativeRoutes(true)
                 .waypoints(KU, buspark)
                 .build();
-        routing.execute();
+        routing.execute();*/
 
 
     }
@@ -150,7 +207,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_SHORT).show();
         }
 
-        // Start marker
+        // Start` marker
         MarkerOptions options = new MarkerOptions();
         options.position(KU);
 
