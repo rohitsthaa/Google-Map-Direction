@@ -49,7 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final LatLngBounds BOUNDS_JAMAICA= new LatLngBounds(new LatLng(23.704181, 83.317305),
             new LatLng(72.77492067739843, -9.998857788741589));
     private int[] colors = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
-    String jsondata= "[{\"Futsal\": {\"Name\": \"Chandeswori Futsal\", \"coordinates\": [27.632121, 85.507912]}}, {\"Futsal\": {\"Name\": \"Badrakali Enterprises\", \"coordinates\": [27.674072, 85.375833]}}]";
+    String jsondata= "[{\"Futsal\": {\"Name\": \"Pepsicola Futsal\", \"Price/h\":\"1200\", \"Location\":\"Lalitpur,Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [25.92,7.22] }}, { \"Futsal\": {\"Name\": \"Duku Futsal Hub\", \"Price/h\":\"1200\", \"Location\":\"Battisputali, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [54.7,6.09] }}, { \"Futsal\": {\"Name\": \"X - Cel Recreation Centre\", \"Price-ph\":\"1200\", \"Location\":\"Baluwatar,Kathamandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [24.77,56.67] }}, { \"Futsal\": {\"Name\": \"Futsal Arena \", \"Price/h\":\"1200\", \"Location\":\"GAA Hall, Thamel, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [1.33,47.06]}}, { \"Futsal\": {\"Name\": \"Royal Futsal\", \"Price/h\":\"1200\", \"Location\":\"Thapagaun, Anamnagar, Kathmandu, Nepal\" ,\"Phone\":\"984756475645\", \"coordinates\": [27.41,85.19]}} ]";
 
 
     @Override
@@ -69,9 +69,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 e.printStackTrace();
             }
             Log.w("intent", getIntent().getStringExtra("EXTRA_SESSION_ID"));
+            Integer i = Integer.valueOf(getIntent().getStringExtra("EXTRA_SESSION_ID"));
             try {
-                latitude=json.getJSONObject(0).getJSONObject("Futsal").getJSONArray("coordinates").get(0).toString();
-                longitude=json.getJSONObject(0).getJSONObject("Futsal").getJSONArray("coordinates").get(1).toString();
+                latitude=json.getJSONObject(i).getJSONObject("Futsal").getJSONArray("coordinates").get(0).toString();
+                longitude=json.getJSONObject(i).getJSONObject("Futsal").getJSONArray("coordinates").get(1).toString();
                 Log.w("lat",String.valueOf(Double.valueOf(latitude)));
                 Log.w("long",String.valueOf(Double.valueOf(longitude
                 )));

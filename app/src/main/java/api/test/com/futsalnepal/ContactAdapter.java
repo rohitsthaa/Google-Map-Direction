@@ -7,11 +7,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by rohit on 2/3/16.
@@ -19,10 +35,11 @@ import java.util.List;
  */
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
+     public static  int position;
         public static Context ctx;
 
-    String jsondata= "[{\"Futsal\": {\"Name\": \"Chandeswori Futsal\", \"coordinates\": [27.632121, 85.507912]}}, {\"Futsal\": {\"Name\": \"Badrakali Enterprises\", \"coordinates\": [27.674072, 85.375833]}}]";
-
+    String jsondata= "[{\"Futsal\": {\"Name\": \"Pepsicola Futsal\", \"Price/h\":\"1200\", \"Location\":\"Lalitpur,Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [25.92,7.22] }}, { \"Futsal\": {\"Name\": \"Duku Futsal Hub\", \"Price/h\":\"1200\", \"Location\":\"Battisputali, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [54.7,6.09] }}, { \"Futsal\": {\"Name\": \"X - Cel Recreation Centre\", \"Price-ph\":\"1200\", \"Location\":\"Baluwatar,Kathamandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [24.77,56.67] }}, { \"Futsal\": {\"Name\": \"Futsal Arena \", \"Price/h\":\"1200\", \"Location\":\"GAA Hall, Thamel, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [1.33,47.06]}}, { \"Futsal\": {\"Name\": \"Royal Futsal\", \"Price/h\":\"1200\", \"Location\":\"Thapagaun, Anamnagar, Kathmandu, Nepal\" ,\"Phone\":\"984756475645\", \"coordinates\": [34.8,49.02]}} ]";
+    Integer Index;
 
     public List<ContactInfo> contactList;
 
@@ -44,7 +61,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         contactViewHolder.vName.setText(ci.name);
         contactViewHolder.vSurname.setText(ci.surname);
         contactViewHolder.vEmail.setText(ci.email);
-        contactViewHolder.vTitle.setText(ci.name + " " + ci.surname);
+
 
     }
 
@@ -54,9 +71,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public int getItemViewType(int position) {
         // Just as an example, return 0 or 2 depending on position
         // Note that unlike in ListView adapters, types don't have to be contiguous
+        Index = position;
 
         return position;
     }
+
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -64,7 +83,42 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                 from(viewGroup.getContext()).
                 inflate(R.layout.item_contact, viewGroup, false);
 
+        final TextView status = (TextView)itemView.findViewById(R.id.textView6);
+        final TextView role = (TextView)itemView.findViewById(R.id.textView7);
+        final Integer number = i;
+        Button btn = (Button) itemView.findViewById(R.id.Book);
+        Button map =(Button) itemView.findViewById(R.id.Map);
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ctx, MapsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                intent.putExtra("EXTRA_SESSION_ID", String.valueOf(number));
 
+
+
+
+                Log.w("position",String.valueOf(number));
+                ctx.startActivity(intent);
+
+            }
+        });
+        btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Log.w("entered","book button");
+
+                try{
+                    String number = new SigninActivity(ctx, status, role, 1).execute("admin", "admin").get();
+                    Log.w("print:",number);
+            }
+            catch(ExecutionException | InterruptedException e)
+            {
+                e.printStackTrace();;
+
+            }}
+        });
         return new ContactViewHolder(itemView);
     }
 
@@ -73,57 +127,27 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         protected TextView vSurname;
         protected TextView vEmail;
         protected TextView vTitle;
-        int position;
+        protected TextView btnNxt;
+
         String dummy;
         JSONObject geometry;
 
+
         public ContactViewHolder(View v) {
             super(v);
-            vName =  (TextView) v.findViewById(R.id.txtName);
-            vSurname = (TextView)  v.findViewById(R.id.txtSurname);
+            vName = (TextView) v.findViewById(R.id.Title);
+            vSurname = (TextView)  v.findViewById(R.id.txtName);
             vEmail = (TextView)  v.findViewById(R.id.txtEmail);
-            vTitle = (TextView) v.findViewById(R.id.title);
+
             v.setOnClickListener(this);
         }
+
+
+
         @Override
         public void onClick(View view) {
 
-            String jsondata= "[{\"Futsal\": {\"Name\": \"Chandeswori Futsal\", \"coordinates\": [27.632121, 85.507912]}}, {\"Futsal\": {\"Name\": \"Badrakali Enterprises\", \"coordinates\": [27.674072, 85.375833]}}]";
-
-            JSONArray json = new JSONArray();
-            JSONObject jPeak;
-
-
-            try {
-
-                json = new JSONArray(jsondata);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < json.length(); i++) {
-                try {
-                     jPeak = json.getJSONObject(i);
-
-                     geometry = jPeak.getJSONObject("Futsal");
-                    JSONArray coordinates = geometry.getJSONArray("coordinates");
-                    Log.w("parser",String.valueOf(coordinates));
-                } catch (JSONException e) {
-                    Log.e("as", "unexpected JSON exception", e);
-                }
-            }
-
-            try {
-                 position= getPosition();
-                dummy=json.getJSONObject(getPosition()).getJSONObject("Futsal").getString("Name");
-                Log.w("click on:", String.valueOf(json.getJSONObject(getPosition()).getJSONObject("Futsal").getJSONArray("coordinates")));
-            }catch (JSONException e){
-                e.printStackTrace();
-            }
-            Log.e("error", dummy);
-            Intent intent = new Intent(ctx, MapsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            intent.putExtra("EXTRA_SESSION_ID", String.valueOf(position));
-            ctx.startActivity(intent);
+            position = getPosition();
 
 
 

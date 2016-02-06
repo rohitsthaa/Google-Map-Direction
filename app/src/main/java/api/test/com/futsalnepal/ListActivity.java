@@ -21,21 +21,23 @@ import java.util.List;
  */
 public class ListActivity extends AppCompatActivity {
     JSONArray json = new JSONArray();
-    String jsondata= "[{\"Futsal\": {\"Name\": \"Chandeswori Futsal\", \"coordinates\": [27.632121, 85.507912]}}, {\"Futsal\": {\"Name\": \"Badrakali Enterprises\", \"coordinates\": [27.674072, 85.375833]}}]";
+    String jsondata= "[{\"Futsal\": {\"Name\": \"Pepsicola Futsal\", \"Price/h\":\"1200\", \"Location\":\"Lalitpur,Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [25.92,7.22] }}, { \"Futsal\": {\"Name\": \"Duku Futsal Hub\", \"Price/h\":\"1200\", \"Location\":\"Battisputali, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [54.7,6.09] }}, { \"Futsal\": {\"Name\": \"X - Cel Recreation Centre\", \"Price-ph\":\"1200\", \"Location\":\"Baluwatar,Kathamandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [24.77,56.67] }}, { \"Futsal\": {\"Name\": \"Futsal Arena \", \"Price/h\":\"1200\", \"Location\":\"GAA Hall, Thamel, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [1.33,47.06]}}, { \"Futsal\": {\"Name\": \"Royal Futsal\", \"Price/h\":\"1200\", \"Location\":\"Thapagaun, Anamnagar, Kathmandu, Nepal\" ,\"Phone\":\"984756475645\", \"coordinates\": [34.8,49.02]}} ]";
 
     private List<ContactInfo> createList(int size) {
         try{
         json = new JSONArray(jsondata);}catch (JSONException e){e.printStackTrace();}
 
         List<ContactInfo> result = new ArrayList<ContactInfo>();
-        for (int i=0; i <= 1; i++) {
+        for (int i=0; i <= 4; i++) {
             ContactInfo ci = new ContactInfo();
             try {
                 ci.name = json.getJSONObject(i).getJSONObject("Futsal").getString("Name");
                 Log.w("hello",json.getJSONObject(i).getJSONObject("Futsal").getString("Name"));
+                ci.surname = json.getJSONObject(i).getJSONObject("Futsal").getString("Location");
+                ci.email = json.getJSONObject(i).getJSONObject("Futsal").getString("Phone");
             }catch (JSONException e){e.printStackTrace();}
-            ci.surname = "";
-            ci.email = "Peacful Environment";
+
+
 
             result.add(ci);
 

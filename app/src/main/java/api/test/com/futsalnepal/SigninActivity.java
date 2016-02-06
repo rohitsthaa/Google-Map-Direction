@@ -45,7 +45,8 @@ public class SigninActivity  extends AsyncTask<String,Void,String> {
             try{
                 String username = (String)arg0[0];
                 String password = (String)arg0[1];
-                String link = "http://10.0.2.2/esewa/api.php?username="+username+"&password="+password;
+                //String link = "http://10.0.2.2/esewa/api.php?username="+username+"&password="+password;
+                String link = "http://10.0.3.2/esewa/api.php?username="+username+"&password="+password;
 
                 URL url = new URL(link);
                 HttpClient client = new DefaultHttpClient();
@@ -73,10 +74,14 @@ public class SigninActivity  extends AsyncTask<String,Void,String> {
             try{
                 String username = (String)arg0[0];
                 String password = (String)arg0[1];
+                String futsal = "futsal arena";
 
-                String link="http://10.0.2.2/esewa/api.php";
+                //  String link="http://10.0.2.2/esewa/api.php";
+                String link="http://10.0.3.2/esewa/book.php";
+
                 String data  = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
                 data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
+                data += "&" + URLEncoder.encode("futsal", "UTF-8") + "=" + URLEncoder.encode(futsal, "UTF-8");
 
                 URL url = new URL(link);
                 URLConnection conn = url.openConnection();
@@ -109,7 +114,7 @@ public class SigninActivity  extends AsyncTask<String,Void,String> {
     @Override
     protected void onPostExecute(String result){
 
-        Log.w("result:",result);
-        this.roleField.setText(result);
+        Log.w("result:", result);
+
     }
 }

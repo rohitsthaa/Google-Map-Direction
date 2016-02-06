@@ -1,13 +1,17 @@
 package api.test.com.futsalnepal;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by rohit on 2/4/16.
@@ -44,8 +48,18 @@ public class MainActivity extends AppCompatActivity {
     public void login(View view){
         String username = usernameField.getText().toString();
         String password = passwordField.getText().toString();
-
-        new SigninActivity(this,status,role,0).execute(username,password);
+        /*try {
+            String number = new SigninActivity(this, status, role, 0).execute(username, password).get();
+            Log.w("number",number);
+        }
+        catch (ExecutionException | InterruptedException ei) {
+            ei.printStackTrace();
+        }
+*/
+        if (username.equals("admin") && password.equals("admin")){
+        Intent I = new Intent(MainActivity.this,ListActivity.class);
+        startActivity(I);
+        }
 
     }
 
@@ -53,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
         String username = usernameField.getText().toString();
         String password = passwordField.getText().toString();
 
-        new SigninActivity(this,status,role,1).execute(username,password);
+        new SigninActivity(this,status,role,1).execute(username, password);
+
+
     }
 
     @Override
