@@ -74,7 +74,7 @@ public class SigninActivity  extends AsyncTask<String,Void,String> {
             try{
                 String username = (String)arg0[0];
                 String password = (String)arg0[1];
-                String futsal = "futsal arena";
+                String futsal = (String)arg0[2];
 
                 //  String link="http://10.0.2.2/esewa/api.php";
                 String link="http://10.0.3.2/esewa/book.php";

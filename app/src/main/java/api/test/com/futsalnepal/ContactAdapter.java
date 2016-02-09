@@ -2,6 +2,9 @@ package api.test.com.futsalnepal;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.LayerDrawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -38,7 +43,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
      public static  int position;
         public static Context ctx;
 
-    String jsondata= "[{\"Futsal\": {\"Name\": \"Pepsicola Futsal\", \"Price/h\":\"1200\", \"Location\":\"Lalitpur,Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [25.92,7.22] }}, { \"Futsal\": {\"Name\": \"Duku Futsal Hub\", \"Price/h\":\"1200\", \"Location\":\"Battisputali, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [54.7,6.09] }}, { \"Futsal\": {\"Name\": \"X - Cel Recreation Centre\", \"Price-ph\":\"1200\", \"Location\":\"Baluwatar,Kathamandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [24.77,56.67] }}, { \"Futsal\": {\"Name\": \"Futsal Arena \", \"Price/h\":\"1200\", \"Location\":\"GAA Hall, Thamel, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [1.33,47.06]}}, { \"Futsal\": {\"Name\": \"Royal Futsal\", \"Price/h\":\"1200\", \"Location\":\"Thapagaun, Anamnagar, Kathmandu, Nepal\" ,\"Phone\":\"984756475645\", \"coordinates\": [34.8,49.02]}} ]";
+    String jsondata= "[{\"Futsal\": {\"Name\": \"Pepsicola Futsal\", \"Price/h\":\"1200\", \"Location\":\"Lalitpur,Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [27.688906, 85.360234] }}, { \"Futsal\": {\"Name\": \"Duku Futsal Hub\", \"Price/h\":\"1200\", \"Location\":\"Battisputali, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [27.731930, 85.334923] }}, { \"Futsal\": {\"Name\": \"X - Cel Recreation Centre\", \"Price-ph\":\"1200\", \"Location\":\"Baluwatar,Kathamandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [27.724908, 85.328185] }}, { \"Futsal\": {\"Name\": \"Futsal Arena \", \"Price/h\":\"1200\", \"Location\":\"GAA Hall, Thamel, Kathmandu, Nepal\", \"Phone\":\"984756475645\", \"coordinates\": [27.716525, 85.313408]}}, { \"Futsal\": {\"Name\": \"Royal Futsal\", \"Price/h\":\"1200\", \"Location\":\"Thapagaun, Anamnagar, Kathmandu, Nepal\" ,\"Phone\":\"984756475645\", \"coordinates\": [27.692976, 85.330238]}} ]";
     Integer Index;
 
     public List<ContactInfo> contactList;
@@ -83,11 +88,30 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                 from(viewGroup.getContext()).
                 inflate(R.layout.item_contact, viewGroup, false);
 
-        final TextView status = (TextView)itemView.findViewById(R.id.textView6);
-        final TextView role = (TextView)itemView.findViewById(R.id.textView7);
         final Integer number = i;
-        Button btn = (Button) itemView.findViewById(R.id.Book);
+        Button book = (Button) itemView.findViewById(R.id.Book);
         Button map =(Button) itemView.findViewById(R.id.Map);
+        RatingBar ratingBar =(RatingBar)itemView.findViewById(R.id.rating);
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating,
+                                        boolean fromUser) {
+
+
+            }
+        });
+
+
+        ratingBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(ctx, "Rating Saved SuccessFully", Toast.LENGTH_SHORT).show();
+
+            }
+        });
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,21 +127,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
             }
         });
-        btn.setOnClickListener(new View.OnClickListener() {
+        book.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Log.w("entered","book button");
-
-                try{
-                    String number = new SigninActivity(ctx, status, role, 1).execute("admin", "admin").get();
-                    Log.w("print:",number);
-            }
-            catch(ExecutionException | InterruptedException e)
-            {
-                e.printStackTrace();;
-
-            }}
+                Intent i = new Intent(ctx,MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                i.putExtra("EXTRA_SESSION_ID", String.valueOf(number));
+                ctx.startActivity(i);
+               }
         });
         return new ContactViewHolder(itemView);
     }
